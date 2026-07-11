@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noodle Passport | Oppa K-Ramyeon Hub</title>
+    <link rel="stylesheet" href="css/styles.css?v=7">
+    <style>
+        .passport-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+        .level-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 768px) {
+            .passport-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 15px;
+            }
+            .stamp-card {
+                height: 150px;
+                padding: 10px;
+            }
+            .stamp-icon {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+            .level-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                text-align: left;
+            }
+            .progress-bar {
+                margin-bottom: 20px;
+            }
+        }
+
+        .stamp-card {
+            background-color: var(--bg-panel);
+            border: 2px dashed rgba(255,255,255,0.15);
+            border-radius: 16px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .stamp-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .stamp-card.unlocked {
+            border: 2px solid var(--accent-yellow);
+            background: linear-gradient(145deg, rgba(232, 179, 35, 0.15), rgba(232, 179, 35, 0.05));
+            box-shadow: 0 0 15px rgba(232, 179, 35, 0.2);
+        }
+
+        .stamp-card.unlocked:hover {
+            box-shadow: 0 0 25px rgba(232, 179, 35, 0.4);
+        }
+
+        .stamp-icon {
+            font-size: 3rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stamp-card.unlocked .stamp-icon {
+            opacity: 1;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 24px;
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+            margin-bottom: 40px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+        }
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #d4a017, var(--accent-yellow));
+            width: 30%; /* Mock progress */
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(232, 179, 35, 0.5);
+        }
+
+        /* Digital Loyalty Card (Premium) */
+        .loyalty-card {
+            background: linear-gradient(135deg, rgba(25,25,25,0.9), rgba(15,15,15,0.95));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 35px 30px;
+            margin: 0 auto 50px;
+            max-width: 650px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.15);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+        .loyalty-card::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(232, 179, 35, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .loyalty-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 5px;
+            background: linear-gradient(90deg, #d4a017, #ff5722, #9c27b0, #d4a017);
+            background-size: 200% auto;
+            animation: gradientShine 3s linear infinite;
+        }
+        @keyframes gradientShine {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        .loyalty-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            position: relative;
+            z-index: 1;
+        }
+        .loyalty-header h3 {
+            margin: 0;
+            color: #fff;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .loyalty-header h3 svg {
+            color: var(--accent-yellow);
+            filter: drop-shadow(0 0 5px rgba(232, 179, 35, 0.5));
+        }
+        .loyalty-header span {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--accent-yellow);
+            background: rgba(232, 179, 35, 0.1);
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(232, 179, 35, 0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .loyalty-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px 15px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        .loyalty-stamp {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.05);
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.5);
+        }
+        .loyalty-stamp.stamped {
+            border-color: var(--accent-yellow);
+            background: linear-gradient(135deg, rgba(232, 179, 35, 0.2), rgba(232, 179, 35, 0.05));
+            box-shadow: 0 0 20px rgba(232, 179, 35, 0.4), inset 0 0 15px rgba(232, 179, 35, 0.2);
+            transform: scale(1.15) rotate(-10deg);
+        }
+        .loyalty-stamp .stamp-icon {
+            display: none;
+        }
+        .loyalty-stamp.stamped .stamp-icon {
+            display: block;
+            color: var(--accent-yellow);
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+            animation: stampPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes stampPop {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.3); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .loyalty-stamp.free-item {
+            border-color: rgba(255, 87, 34, 0.3);
+            background: rgba(255, 87, 34, 0.05);
+        }
+        .loyalty-stamp.free-item::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 87, 34, 0.5);
+            animation: rotateDash 10s linear infinite;
+        }
+        @keyframes rotateDash {
+            100% { transform: rotate(360deg); }
+        }
+        .loyalty-stamp.stamped.free-item {
+            border-color: #ff5722;
+            background: linear-gradient(135deg, rgba(255, 87, 34, 0.3), rgba(255, 87, 34, 0.1));
+            box-shadow: 0 0 30px rgba(255, 87, 34, 0.6), inset 0 0 20px rgba(255, 87, 34, 0.3);
+            transform: scale(1.25) rotate(5deg);
+        }
+        .loyalty-stamp.stamped.free-item .stamp-icon {
+            color: #fff;
+            filter: drop-shadow(0 0 8px #ff5722);
+        }
+        .loyalty-stamp-number {
+            position: absolute;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.2);
+            font-weight: 700;
+        }
+        .loyalty-stamp.stamped .loyalty-stamp-number {
+            display: none;
+        }
+        .loyalty-stamp.free-item .loyalty-stamp-number {
+            color: #ff5722;
+        }
+        .loyalty-footer {
+            text-align: center;
+            font-size: 1rem;
+            color: var(--text-main);
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 1;
+        }
+        @media (max-width: 600px) {
+            .loyalty-grid {
+                gap: 15px 10px;
+            }
+            .loyalty-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 15px;
+            }
+            .loyalty-stamp.stamped {
+                transform: scale(1.05) rotate(-5deg);
+            }
+            .loyalty-stamp.stamped.free-item {
+                transform: scale(1.1) rotate(5deg);
+            }
+        }
+        .mock-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .mock-row:last-child {
+            border-bottom: none;
+        }
+    </style>
+
+</head>
+<body>
+
+        <header>
+        <div class="container nav-container">
+            <div class="logo" style="display: flex; align-items: center; gap: 10px;"><img src="images/logo.jpg" alt="Oppa Logo" style="height: 40px; border-radius: 50%; border: 2px solid var(--accent-yellow); cursor: pointer;" onclick="window.location.href = window.location.pathname + '?bust=' + new Date().getTime();" title="Hard Refresh & Cache Bust">OPPA <span style="color:var(--text-main);">K-RAMYEON HUB</span></div>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="menu.html">Menu & Build-a-Bowl</a>
+                <a href="reservations.html">Reservations</a>
+                <a href="passport.html" class="active">Noodle Passport</a>
+                <a href="about.html">About & Contact</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="login.html" class="user-icon-wrapper" style="color: var(--text-main); display: flex; align-items: center; justify-content: center;" title="Login / Register">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </a>
+                <div class="cart-icon-wrapper" onclick="openCart()">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: middle;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> <div class="cart-badge" style="display: none;">0</div>
+                </div>
+                <button class="mobile-menu-btn"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: middle;"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container section">
+        <div id="profile-header-container" style="display: none; align-items: center; justify-content: space-between; margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;">
+            <div>
+                <h1 style="font-size: 2.5rem; margin-bottom: 5px; margin-top: 0;">Annyeong, <span id="p-name" style="color:var(--accent-yellow)">User</span>!</h1>
+                <p style="color: var(--text-muted); margin: 0;">Manage your Passport Points and activity here.</p>
+            </div>
+            <button onclick="logoutUser()" class="btn btn-outline" style="border-color: var(--danger); color: var(--danger);">Logout</button>
+        </div>
+
+        <h2 style="text-align: center; margin-bottom: 10px;">Your <span style="color:var(--accent-yellow)">Noodle Passport</span></h2>
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 40px;">Spend and earn points to unlock badges and get free bowls!</p>
+
+        <!-- Digital Loyalty Stamp Card -->
+        <div class="loyalty-card" id="loyalty-card-section" style="display: none;">
+            <div class="loyalty-header">
+                <h3>
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                    Digital Stamp Card
+                </h3>
+                <span>1 Stamp per 50 pts</span>
+            </div>
+            <div class="loyalty-grid" id="loyalty-grid">
+                <!-- Injected by JS -->
+            </div>
+            <div class="loyalty-footer" id="rewards-text">
+                Collect 10 stamps to earn a <strong style="color:#ff5722;">FREE Premium Bowl!</strong>
+            </div>
+        </div>
+
+        <div style="max-width: 600px; margin: 0 auto; position: relative;">
+            <div class="level-info">
+                <p style="margin: 0; text-align: left;">Level: <strong style="color:var(--accent-yellow)" id="user-level">Ramen Novice</strong> (<span id="unlocked-count">0</span>/15 Unlocked)</p>
+                <p style="margin: 0; font-weight: 600; color: var(--text-main);">Points: <span id="user-points" style="color: var(--accent-yellow); font-size: 1.2rem;">0</span></p>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: -30px; margin-bottom: 40px; text-align: right;">Next unlock at <span id="next-unlock">100</span> pts</p>
+        </div>
+
+        <div class="passport-grid" id="passport-grid">
+            <!-- Injected by JS -->
+        </div>
+
+        <div style="margin: 60px auto 20px;">
+            <h2 style="margin-bottom: 20px;">Your Activity</h2>
+            
+            <div class="section-card" style="background-color: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                <h3 style="margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">Recent Orders</h3>
+                <div id="orders-container">
+                    <div style="text-align:center; padding: 20px; color: var(--text-muted);">Loading orders...</div>
+                </div>
+            </div>
+
+            <div class="section-card" style="background-color: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+                <h3 style="margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">Upcoming Reservations</h3>
+                <div id="reservations-container">
+                    <div style="text-align:center; padding: 20px; color: var(--text-muted);">Loading reservations...</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <footer style="text-align: center; padding: 40px; border-top: 1px solid var(--border-color); margin-top: 40px;">
+        <div class="container" style="text-align: center;">
+            <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+                <a href="https://www.instagram.com/oppakramyeonhub/" target="_blank" style="color: var(--accent-yellow);">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61568284540139" target="_blank" style="color: var(--accent-yellow);">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/></svg>
+                </a>
+                <a href="https://www.tiktok.com/@oppakramyeon.hub" target="_blank" style="color: var(--accent-yellow);">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                </a>
+            </div>
+            <p>&copy; 2026 Oppa K-Ramyeon Hub. All rights reserved.</p>
+            
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/cart.js?v=2"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const grid = document.getElementById('passport-grid');
+            
+            const badges = [
+                { id: 'b1', name: 'First Slurp', pts: 10, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='var(--accent-yellow)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M2 12a10 10 0 0 0 20 0Z'/><path d='M7 12v-5'/><path d='M12 12V4'/><path d='M17 12v-3'/><path d='M3 11l18-3'/></svg>` },
+                { id: 'b2', name: 'Fire Breath', pts: 50, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#ff5722' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M8.5 14.5A2.5 2.5 0 0 0 11 12c-3.968-3-4.98-6-3-9-3.968 3-4.98 6-3 9a2.5 2.5 0 0 0 3.5 2.5z'/><path d='M15.5 14.5A2.5 2.5 0 0 1 13 12c3.968-3 4.98-6 3-9 3.968 3 4.98 6 3 9a2.5 2.5 0 0 1-3.5 2.5z'/><path d='M12 22a7 7 0 1 0 0-14 7 7 0 0 0 0 14z'/></svg>` },
+                { id: 'b3', name: 'Street Food Fan', pts: 100, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#8bc34a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M2 22l20-20'/><circle cx='10' cy='14' r='3'/><circle cx='14' cy='10' r='3'/></svg>` },
+                { id: 'b4', name: 'Bingsu Lover', pts: 150, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#00bcd4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2v20'/><path d='M2 12h20'/><path d='M5 5l14 14'/><path d='M19 5l-14 14'/><circle cx='12' cy='12' r='3'/></svg>` },
+                { id: 'b5', name: 'Egg-cellent', pts: 200, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#ffeb3b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><circle cx='12' cy='12' r='4'/></svg>` },
+                { id: 'b6', name: 'Banana Milk', pts: 300, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#ffd54f' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='6' y='8' width='12' height='14' rx='2' ry='2'/><path d='M6 8l4-6h4l4 6'/></svg>` },
+                { id: 'b7', name: 'Cheese Master', pts: 400, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#ffc107' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/><circle cx='12' cy='12' r='2'/></svg>` },
+                { id: 'b8', name: 'Kimbap Roller', pts: 500, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#4caf50' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><rect x='8' y='8' width='8' height='8'/><circle cx='12' cy='12' r='2'/></svg>` },
+                { id: 'b9', name: 'Midnight Craving', pts: 600, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#9c27b0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/></svg>` },
+                { id: 'b10', name: 'Weekend Warrior', pts: 750, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#e91e63' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='4' width='18' height='18' rx='2' ry='2'/><path d='M16 2v4'/><path d='M8 2v4'/><path d='M3 10h18'/><path d='M8 14h.01'/><path d='M12 14h.01'/><path d='M16 14h.01'/></svg>` },
+                { id: 'b11', name: 'Hangover Cure', pts: 900, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#00e676' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M22 12h-4l-3 9L9 3l-3 9H2'/></svg>` },
+                { id: 'b12', name: 'Double Trouble', pts: 1100, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#03a9f4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10'/><path d='M4 8l8 4 8-4'/></svg>` },
+                { id: 'b13', name: 'Social Butterfly', pts: 1300, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#f44336' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'/></svg>` },
+                { id: 'b14', name: 'Ramyeon King', pts: 1600, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='var(--accent-yellow)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M2 20h20'/><path d='M4 20l2-14 4 4 2-8 2 8 4-4 2 14'/></svg>` },
+                { id: 'b15', name: 'Oppa VIP', pts: 2000, svg: `<svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#d4af37' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg>` }
+            ];
+            
+            // Check session to get real user points if logged in
+            let userPoints = 0;
+            let bowlsRedeemed = 0;
+            let isLoggedIn = false;
+            try {
+                const res = await fetch('api/auth_api.php?action=check_session', { credentials: 'include' });
+                const data = await res.json();
+                if(data.success) {
+                    isLoggedIn = true;
+                    if (data.user.passport_points !== undefined) {
+                        userPoints = parseInt(data.user.passport_points);
+                    }
+                    if (data.user.bowls_redeemed !== undefined) {
+                        bowlsRedeemed = parseInt(data.user.bowls_redeemed);
+                    }
+                    if (data.user.first_name) {
+                        const pName = document.getElementById('p-name');
+                        if (pName) pName.innerText = data.user.first_name;
+                    }
+                    
+                    const header = document.getElementById('profile-header-container');
+                    if(header) header.style.display = 'flex';
+                }
+            } catch(e) { 
+                console.log('Not logged in or offline');
+            }
+
+            document.getElementById('user-points').textContent = userPoints;
+            
+            if (!isLoggedIn) {
+                const grid = document.getElementById('passport-grid');
+                grid.insertAdjacentHTML('beforebegin', '<div style="text-align:center; margin-bottom: 30px;"><a href="login.html" class="btn btn-outline" style="border-color:var(--accent-yellow); color:var(--accent-yellow);">Login or Register to start earning points!</a></div>');
+                document.getElementById('orders-container').innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Please login to view your recent orders.</div>';
+                document.getElementById('reservations-container').innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">Please login to view your upcoming reservations.</div>';
+            }
+
+            let unlockedCount = 0;
+            let nextUnlockPts = 2000;
+            let currentLevel = 'Ramen Novice';
+
+            badges.forEach(b => {
+                const isUnlocked = userPoints >= b.pts;
+                if(isUnlocked) {
+                    unlockedCount++;
+                    currentLevel = b.name;
+                } else if(b.pts < nextUnlockPts) {
+                    nextUnlockPts = b.pts;
+                }
+
+                const div = document.createElement('div');
+                div.className = `stamp-card ${isUnlocked ? 'unlocked' : ''}`;
+                div.innerHTML = `
+                    <div class="stamp-icon" style="position:relative; height: 80px;">
+                        ${isUnlocked ? '<div style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); display:flex; justify-content:center; align-items:center; width:80px; height:80px;">' + b.svg + '</div>' : `<svg width="40" height="40" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: middle;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`}
+                        ${!isUnlocked ? `<div style="position:absolute; bottom:-25px; left:-50%; width:200%; text-align:center; font-size:0.8rem; font-weight:bold; color:rgba(255,255,255,0.4);">${b.pts} pts</div>` : ''}
+                    </div>
+                    <div style="font-size: 0.9rem; font-weight: 700; margin-top:25px; color: ${isUnlocked ? 'var(--text-main)' : 'var(--text-muted)'};">${b.name}</div>
+                `;
+                grid.appendChild(div);
+            });
+
+            document.getElementById('unlocked-count').textContent = unlockedCount;
+            document.getElementById('user-level').textContent = currentLevel;
+            document.getElementById('next-unlock').textContent = unlockedCount === badges.length ? 'Maxed Out!' : nextUnlockPts;
+            
+            // Calculate progress bar relative to next unlock
+            let prevUnlockPts = 0;
+            if(unlockedCount > 0) prevUnlockPts = badges[unlockedCount-1].pts;
+            let progressPercent = 100;
+            if(unlockedCount < badges.length) {
+                progressPercent = ((userPoints - prevUnlockPts) / (nextUnlockPts - prevUnlockPts)) * 100;
+            }
+            document.getElementById('progress-fill').style.width = Math.min(100, Math.max(0, progressPercent)) + '%';
+            
+            // Populate Digital Stamp Card
+            if (isLoggedIn) {
+                document.getElementById('loyalty-card-section').style.display = 'block';
+                const totalStamps = Math.floor(userPoints / 50); // 1 stamp per 50 pts
+                let unredeemedStamps = totalStamps - (bowlsRedeemed * 10);
+                if (unredeemedStamps < 0) unredeemedStamps = 0;
+                let completedCards = Math.floor(unredeemedStamps / 10);
+                
+                let totalSlots = Math.ceil(Math.max(unredeemedStamps, 1) / 10) * 10;
+                
+                const loyaltyGrid = document.getElementById('loyalty-grid');
+                let loyaltyHTML = '';
+                for (let i = 1; i <= totalSlots; i++) {
+                    let isStamped = i <= unredeemedStamps;
+                    let isFree = i % 10 === 0;
+                    let stampClass = isStamped ? 'stamped' : '';
+                    if (isFree) stampClass += ' free-item';
+                    
+                    let icon = isFree 
+                        ? `<svg class="stamp-icon" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>` 
+                        : `<svg class="stamp-icon" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`;
+                    
+                    let displayNum = i % 10;
+                    if (displayNum === 0) displayNum = 10;
+                    
+                    loyaltyHTML += `
+                        <div class="loyalty-stamp ${stampClass}">
+                            ${icon}
+                            <span class="loyalty-stamp-number">${isFree ? 'FREE' : displayNum}</span>
+                        </div>
+                    `;
+                    
+                    if (isFree && i !== totalSlots) {
+                        loyaltyHTML += `<div style="grid-column: span 5; border-bottom: 2px dashed rgba(255,255,255,0.1); margin: 5px 0;"></div>`;
+                    }
+                }
+                loyaltyGrid.innerHTML = loyaltyHTML;
+                
+                const rewardsText = document.getElementById('rewards-text');
+                if (completedCards > 0) {
+                    rewardsText.innerHTML = `🎉 You have <strong style="color:#ff5722; font-size:1.1rem;">${completedCards} FREE Bowl(s)</strong> available to claim in-store!`;
+                }
+                
+                loadActivity();
+            }
+        });
+
+        async function logoutUser() {
+            if(!(await customConfirm('Logout', 'Are you sure you want to logout?'))) return;
+            await fetch('api/auth_api.php?action=logout', { credentials: 'include' });
+            window.location.href = 'login.html';
+        }
+
+        async function loadActivity() {
+            try {
+                const res = await fetch('api/profile_api.php', { credentials: 'include' });
+                const data = await res.json();
+                
+                const ordersContainer = document.getElementById('orders-container');
+                const resContainer = document.getElementById('reservations-container');
+                
+                if (data.success) {
+                    if (data.orders.length === 0) {
+                        ordersContainer.innerHTML = '<div style="padding: 20px; color: var(--text-muted);">No recent orders found.</div>';
+                    } else {
+                        ordersContainer.innerHTML = data.orders.map(o => `
+                            <div class="mock-row">
+                                <div>
+                                    <strong style="display:block;">Order #${o.receipt_code}</strong>
+                                    <span style="color:var(--text-muted); font-size: 0.85rem;">₱${o.total_price}</span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span style="color: var(--accent-yellow); font-weight:bold;">+${o.points_earned} pts</span><br>
+                                    <span style="color:var(--text-muted); font-size: 0.85rem;">${new Date(o.created_at).toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+
+                    if (data.reservations.length === 0) {
+                        resContainer.innerHTML = '<div style="padding: 20px; color: var(--text-muted);">No upcoming reservations found.</div>';
+                    } else {
+                        resContainer.innerHTML = data.reservations.map(r => {
+                            let statusColor = r.status === 'confirmed' ? '#4caf50' : (r.status === 'cancelled' ? '#f44336' : (r.status === 'pending' ? '#ff9800' : '#9e9e9e'));
+                            return `
+                            <div class="mock-row">
+                                <div>
+                                    <strong style="display:block;">Table for ${r.party_size} (${r.name})</strong>
+                                    <span style="color:var(--text-muted); font-size: 0.85rem;">${new Date(r.res_date).toLocaleDateString()} at ${r.res_time}</span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span style="background: rgba(255,255,255,0.1); color: ${statusColor}; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; text-transform: capitalize;">${r.status}</span>
+                                </div>
+                            </div>
+                            `;
+                        }).join('');
+                    }
+                } else {
+                    ordersContainer.innerHTML = `<div style="padding: 20px; color: var(--danger);">${data.error || 'Failed to load activity.'}</div>`;
+                    resContainer.innerHTML = `<div style="padding: 20px; color: var(--danger);">${data.error || 'Failed to load activity.'}</div>`;
+                }
+            } catch (err) {
+                console.error('Failed to load activity', err);
+                const ordersContainer = document.getElementById('orders-container');
+                const resContainer = document.getElementById('reservations-container');
+                if (ordersContainer) ordersContainer.innerHTML = '<div style="padding: 20px; color: var(--danger);">Network or server error loading activity.</div>';
+                if (resContainer) resContainer.innerHTML = '<div style="padding: 20px; color: var(--danger);">Network or server error loading activity.</div>';
+            }
+        }
+    </script>
+</body>
+</html>

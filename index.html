@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oppa K-Ramyeon Hub | Bangar, La Union</title>
+    <meta name="description" content="A cook it yourself Korean Ramen hub with K-egg sandwiches, Rice bowl, corndog and other Korean foods.">
+    <link rel="stylesheet" href="css/styles.css?v=6">
+    <style>
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(10, 11, 14, 0.7), rgba(10, 11, 14, 0.9)), var(--bg-dark);
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            margin-top: -110px; /* offset main margin to be fullscreen */
+        }
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        }
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            .hero-content p {
+                font-size: 1rem;
+            }
+            .randomizer-box {
+                min-height: 200px;
+                padding: 10px;
+                flex-direction: column;
+            }
+            .randomizer-plus {
+                margin: -5px 0;
+            }
+        }
+        .hero-content h1 span {
+            color: var(--accent-yellow);
+        }
+        .hero-content p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            color: var(--text-muted);
+        }
+        
+        .wait-time {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--accent-yellow);
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 30px;
+            gap: 10px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(232, 179, 35, 0.2);
+        }
+
+        .roulette-section {
+            text-align: center;
+            background-color: var(--bg-panel-hover);
+        }
+        
+        .randomizer-box {
+            width: 100%;
+            max-width: 450px;
+            min-height: 250px;
+            border-radius: 15px;
+            border: 5px solid var(--accent-yellow);
+            margin: 40px auto;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: var(--bg-dark);
+            box-shadow: 0 0 20px rgba(232, 179, 35, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+        .randomizer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        .randomizer-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .randomizer-title {
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 1.1rem;
+            min-height: 1.5em;
+        }
+        .randomizer-plus {
+            font-size: 2rem;
+            color: var(--accent-yellow);
+            font-weight: 700;
+        }
+
+        .roulette-result {
+            font-size: 1.5rem;
+            color: var(--accent-yellow);
+            min-height: 40px;
+            margin-top: 20px;
+            font-weight: 700;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .gallery-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+        .gallery-img:hover {
+            transform: scale(1.02);
+            filter: brightness(1.2);
+        }
+    </style>
+</head>
+<body>
+
+        <header>
+        <div class="container nav-container">
+            <div class="logo" style="display: flex; align-items: center; gap: 10px;"><img src="images/logo.jpg" alt="Oppa Logo" style="height: 40px; border-radius: 50%; border: 2px solid var(--accent-yellow); cursor: pointer;" onclick="window.location.href = window.location.pathname + '?bust=' + new Date().getTime();" title="Hard Refresh & Cache Bust">OPPA <span style="color:var(--text-main);">K-RAMYEON HUB</span></div>
+            <nav class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="menu.html">Menu & Build-a-Bowl</a>
+                <a href="reservations.html">Reservations</a>
+                <a href="passport.html">Noodle Passport</a>
+                <a href="about.html">About & Contact</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="login.html" class="user-icon-wrapper" style="color: var(--text-main); display: flex; align-items: center; justify-content: center;" title="Login / Register">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </a>
+                <div class="cart-icon-wrapper" onclick="openCart()">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: middle;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> <div class="cart-badge" style="display: none;">0</div>
+                </div>
+                <button class="mobile-menu-btn"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: middle;"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+
+                <h1>The Ultimate <span>Cook-It-Yourself</span> Experience</h1>
+                <p>A cook it yourself Korean Ramen hub with K-egg sandwiches, Rice bowl, corndog and other Korean foods.</p>
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <a href="menu.html" class="btn btn-primary" style="width: 240px;">Explore Menu</a>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=OPPA+K-Ramyeon+Hub,+San+Blas,+Bangar,+La+Union" target="_blank" class="btn btn-outline" style="width: 240px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 8px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Get Directions</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section roulette-section">
+            <div class="container">
+                <h2>Ramyeon Roulette</h2>
+                <p style="color: var(--text-muted); margin-top: 10px;">Can't decide? Let the wheel pick your bowl and toppings today!</p>
+                
+                <div style="position: relative; width: 100%; max-width: 450px; margin: 0 auto;">
+                    <div class="randomizer-box" id="randomizer-box">
+                        <span style="color: var(--text-muted); font-size: 4rem;">?</span>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="spinRoulette()">Find My Bowl</button>
+                <div class="roulette-result" id="roulette-result"></div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: 40px;">Vibe Check #OppaBangar</h2>
+                <div class="gallery-grid" id="gallery-grid">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer style="text-align: center; padding: 40px; border-top: 1px solid var(--border-color); margin-top: 40px;">
+        <div class="container" style="text-align: center;">
+            <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+                <a href="https://www.instagram.com/oppakramyeonhub/" target="_blank" style="color: var(--accent-yellow);">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61568284540139" target="_blank" style="color: var(--accent-yellow);">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/></svg>
+                </a>
+                <a href="https://www.tiktok.com/@oppa.kramyeon.hub" target="_blank" style="color: var(--accent-yellow);">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                </a>
+            </div>
+            <p>&copy; 2026 Oppa K-Ramyeon Hub. All rights reserved.</p>
+            
+        </div>
+    </footer>
+
+    <script src="js/main.js?v=4"></script>
+    <script src="js/data.js?v=4"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                const img = new Image();
+                img.onload = () => {
+                    hero.style.backgroundImage = `linear-gradient(rgba(10, 11, 14, 0.7), rgba(10, 11, 14, 0.9)), url('${img.src}')`;
+                };
+                img.src = 'images/hero-bg.jpg?t=' + new Date().getTime();
+            }
+        });
+    </script>
+    <script src="js/cart.js?v=2"></script>
+    <script src="js/roulette.js"></script>
+    <script>
+        // Populate Gallery
+        async function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            try {
+                const res = await fetch('api/gallery_api.php?action=get');
+                const text = await res.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (parseErr) {
+                    grid.innerHTML = `<p style="color: red; grid-column: 1 / -1;">API Error: ${text.substring(0, 100)}</p>`;
+                    return;
+                }
+                
+                grid.innerHTML = ''; // Clear previous items
+                
+                if (data.success && data.gallery && data.gallery.length > 0) {
+                    data.gallery.forEach(item => {
+                        const img = document.createElement('img');
+                        img.src = item.image_url;
+                        img.className = 'gallery-img';
+                        img.alt = 'Vibe Check Gallery';
+                        // Cache buster for images to ensure they show up after upload
+                        img.src = item.image_url + '?t=' + new Date().getTime();
+                        grid.appendChild(img);
+                    });
+                } else {
+                    grid.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;">No vibe check photos yet. Be the first!</p>';
+                }
+            } catch (err) {
+                grid.innerHTML = `<p style="color: red; text-align: center; grid-column: 1 / -1;">Network Error: ${err.message}</p>`;
+                console.error('Failed to load gallery', err);
+            }
+        }
+        
+        // Call renderGallery when page loads
+        document.addEventListener('DOMContentLoaded', renderGallery);
+    </script>
+</body>
+</html>
