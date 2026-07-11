@@ -1,5 +1,7 @@
 # Oppa K-Ramyeon Hub
 
+** Live Demo:** [oppakramyeonhub.great-site.net](http://oppakramyeonhub.great-site.net)
+
 Welcome to the **Oppa K-Ramyeon Hub**! This is a complete e-commerce and point-of-sale web application designed for a K-Ramyeon store. It allows customers to build their own custom ramyeon bowls, earn loyalty points, and check out seamlessly.
 
 ## Features
