@@ -20,3 +20,8 @@ Welcome to the **Oppa K-Ramyeon Hub**! This is a complete e-commerce and point-o
 2. Import the database `.sql` backup file into your MySQL database.
 3. Open `api/db_connect.php` and update the database credentials (Host, Username, Password, Database Name) to match your server.
 4. Open the website in your browser and enjoy!
+
+### Important Configuration
+Before deploying, make sure to set the required environment variables in your Firebase project to secure your application:
+`firebase functions:secrets:set JWT_SECRET`
+`firebase functions:config:set storage.bucket="your-project-id.appspot.com"`
